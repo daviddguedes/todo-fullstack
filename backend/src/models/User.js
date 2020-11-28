@@ -30,4 +30,7 @@ const UserSchema = new mongoose.Schema({
 const User = db.model("User", UserSchema);
 
 User.hashPassword = (value) => hashPassword(value);
-module.exports = User;
+module.exports = {
+    User,
+    UserSchema
+};

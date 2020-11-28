@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const { SECRET } = require("../config/jwtConfig");
 
 module.exports = (req, res, next) => {
   const header = req.headers.authorization;
@@ -20,7 +20,7 @@ module.exports = (req, res, next) => {
     return res.status(401).send({ error: "Token malformatted" });
   }
 
-  jwt.verify(token, process.env.SECRET, async (err, { id, name, username }) => {
+  jwt.verify(token, SECRET, async (err, { id, name, username }) => {
     if (err) return res.status(401).send({ error: "Invalid token" });
     req.user = { id, name, username };
   });

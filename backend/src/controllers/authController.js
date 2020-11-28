@@ -1,11 +1,12 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const { SECRET } = require("../config/jwtConfig");
+const { User } = require("../models/User");
 
 const router = express.Router();
 
 function tokenGenerator({ id, name, username }) {
-  return jwt.sign({ id, name, username }, process.env.SECRET, {
+  return jwt.sign({ id, name, username }, SECRET, {
     expiresIn: 86400,
   });
 }
