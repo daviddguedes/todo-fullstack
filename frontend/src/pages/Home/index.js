@@ -1,10 +1,20 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import history from "../../navigation/history";
 
 function Home() {
-  const { user } = useContext(AuthContext);
+  const { user, handleLogout } = useContext(AuthContext);
 
-  return <h1>Wellcome {user?.name}</h1>;
+  if (!user) {
+      history.push('/login');
+  }
+
+  return (
+      <div>
+          <h1>Wellcome {user?.name}</h1>
+          <button type="button" onClick={handleLogout}>LogOut</button>
+      </div>
+  );
 }
 
 export default Home;
