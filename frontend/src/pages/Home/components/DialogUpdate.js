@@ -13,7 +13,6 @@ import {
 
 const modalContentProps = {
   type: DialogType.normal,
-  title: "Update Project",
   closeButtonAriaLabel: "Close",
 };
 
@@ -22,6 +21,9 @@ export default function DialogUpdate({
   toggleHideModal,
   updateProject,
   setProjectToChange,
+  title,
+  placeholder,
+  buttonText,
 }) {
   const [name, setName] = useState(null);
 
@@ -33,18 +35,18 @@ export default function DialogUpdate({
     <Dialog
       hidden={hideModal}
       onDismiss={toggleHideModal}
-      dialogContentProps={modalContentProps}
+      dialogContentProps={{ ...modalContentProps, title }}
     >
       <Stack>
         <TextField
           type="text"
           onChange={(e) => setName(e.target.value)}
-          placeholder="Project Name"
+          placeholder={placeholder}
         />
       </Stack>
 
       <DialogFooter>
-        <PrimaryButton onClick={() => updateProject(name)} text="Update" />
+        <PrimaryButton onClick={() => updateProject(name)} text={buttonText} />
         <DefaultButton
           onClick={() => {
             toggleHideModal();

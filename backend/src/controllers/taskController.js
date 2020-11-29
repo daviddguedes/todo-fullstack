@@ -49,12 +49,12 @@ router.post("/", auth, async (req, res) => {
  * DELETE /tasks
  * Delete a task
  */
-router.delete("/", auth, async (req, res) => {
+router.delete("/:projectId/:taskId", auth, async (req, res) => {
   if (!req.user.id) {
     res.status(401).send({ error: "User is not authenticated!" });
   }
 
-  const { projectId, taskId } = req.body;
+  const { projectId, taskId } = req.params;
   if (!projectId || !taskId) {
     return res.status(400).send({ error: "Project and task is required." });
   }
@@ -88,12 +88,13 @@ router.delete("/", auth, async (req, res) => {
  * PUT /tasks
  * Update a task
  */
-router.put("/", auth, async (req, res) => {
+router.put("/:projectId", auth, async (req, res) => {
   if (!req.user.id) {
     res.status(401).send({ error: "User is not authenticated!" });
   }
 
-  const { projectId, taskId, description, completed } = req.body;
+  const { projectId } = req.params;
+  const { taskId, description, completed } = req.body;
   if (!projectId || !taskId) {
     return res.status(400).send({ error: "Project and task is required." });
   }

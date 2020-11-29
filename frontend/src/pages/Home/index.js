@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { TextField, Stack, PrimaryButton } from "office-ui-fabric-react";
 import { useBoolean } from "@uifabric/react-hooks";
 
@@ -10,6 +10,8 @@ import NavContainer from "../../shared/NavContainer";
 import ProjectWidget from "./components/ProjectWidget";
 import DialogDelete from "./components/DialogDelete";
 import DialogUpdate from "./components/DialogUpdate";
+
+export const HomeContext = createContext({});
 
 function Home() {
   const { user, handleLogout } = useContext(AuthContext);
@@ -30,6 +32,15 @@ function Home() {
 
   if (!user) {
     history.push("/login");
+  }
+
+  async function handleRefreshProjects() {
+    try {
+      const { data } = await api.get("/projects");
+      setProjects(data.projects);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function handleCreateProject() {
@@ -96,51 +107,57 @@ function Home() {
   return (
     <div className="container">
       <NavContainer user={user} handleLogout={handleLogout} />
-      <div className="content-page">
-        <div className="custom-body">
-          <div className="projects-container">
-            {projects.map((project) => (
-              <ProjectWidget
-                key={project._id}
-                project={project}
-                handleChangeProject={(action, current) =>
-                  handleChangeProject(action, current)
-                }
-              />
-            ))}
-          </div>
-          <div className="project-form">
-            <Stack tokens={{ childrenGap: 10 }}>
-              <span>Create a new Project</span>
-              <TextField
-                onChange={({ target: { value } }) => setNewProject(value)}
-                placeholder="Project name"
-              />
-              <PrimaryButton
-                text="Create Project"
-                onClick={() => handleCreateProject()}
-                allowDisabledFocus
-                disabled={newProject === ""}
-                checked={false}
-              />
-            </Stack>
+      <HomeContext.Provider value={{ handleRefreshProjects }}>
+        <div className="content-page">
+          <div className="custom-body">
+            <div className="projects-container">
+              {projects.map((project) => (
+                <ProjectWidget
+                  key={project._id}
+                  project={project}
+                  handleChangeProject={(action, current) =>
+                    handleChangeProject(action, current)
+                  }
+                  refreshProjects={handleRefreshProjects}
+                />
+              ))}
+            </div>
+            <div className="project-form">
+              <Stack tokens={{ childrenGap: 10 }}>
+                <span>Create a new Project</span>
+                <TextField
+                  onChange={({ target: { value } }) => setNewProject(value)}
+                  placeholder="Project name"
+                />
+                <PrimaryButton
+                  text="Create Project"
+                  onClick={() => handleCreateProject()}
+                  allowDisabledFocus
+                  disabled={newProject === ""}
+                  checked={false}
+                />
+              </Stack>
+            </div>
           </div>
         </div>
-      </div>
 
-      <DialogDelete
-        hideDialog={hideDialog}
-        toggleHideDialog={toggleHideDialog}
-        deleteProject={deleteProject}
-        setProjectToChange={setProjectToChange}
-      />
+        <DialogDelete
+          hideDialog={hideDialog}
+          toggleHideDialog={toggleHideDialog}
+          deleteProject={deleteProject}
+          setProjectToChange={setProjectToChange}
+        />
 
-      <DialogUpdate
-        hideModal={hideModal}
-        toggleHideModal={toggleHideModal}
-        updateProject={updateProject}
-        setProjectToChange={setProjectToChange}
-      />
+        <DialogUpdate
+          hideModal={hideModal}
+          toggleHideModal={toggleHideModal}
+          updateProject={updateProject}
+          setProjectToChange={setProjectToChange}
+          title={"Update Project"}
+          placeholder={"Project Name"}
+          buttonText={"Update"}
+        />
+      </HomeContext.Provider>
     </div>
   );
 }
