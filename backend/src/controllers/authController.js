@@ -5,38 +5,30 @@ const { User } = require("../models/User");
 
 const router = express.Router();
 
-function tokenGenerator({ id, name, username }) {
-  return jwt.sign({ id, name, username }, SECRET, {
+function tokenGenerator({ id, name, email }) {
+  return jwt.sign({ id, name, email }, SECRET, {
     expiresIn: 86400,
   });
 }
 
 router.post("/signup", async (req, res) => {
-  const { name, username, password } = req.body;
+  const { name, email, password } = req.body;
 
-  if (!name || !username || !password) {
+  if (!name || !email || !password) {
     return res
       .status(400)
-      .send({ error: "Name, username and password is required!" });
+      .send({ error: "Name, email and password is required!" });
   }
 
   try {
-    if (await User.findOne({ username })) {
-      return res.status(400).send({ error: "Username already exists" });
+    if (await User.findOne({ email })) {
+      return res.status(400).send({ error: "email already exists" });
     }
 
-    const user = await User.create(req.body);
-
-    const token = tokenGenerator(user);
+    await User.create(req.body);
 
     return res.send({
-      user: {
-        id: user.id,
-        name: user.name,
-        username: user.username,
-        createdAt: user.createdAt,
-      },
-      token,
+      message: 'Success!'
     });
   } catch (error) {
     console.log(error);
@@ -45,43 +37,45 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/signin", async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!username || !password) {
-    return res
-      .status(400)
-      .send({ error: "Username and password is required!" });
+  if (!email || !password) {
+    return res.status(400).send({ error: "email and password is required!" });
   }
 
-  const user = await User.findOne({ username }).select("+password");
+  try {
+    const user = await User.findOne({ email }).select("+password");
 
-  if (!user) {
-    return res.status(400).send({ error: "User not found!" });
+    if (!user) {
+      return res.status(400).send({ error: "User not found!" });
+    }
+
+    if (user.password !== User.hashPassword(password)) {
+      return res.status(400).send({ error: "Invalid email or password!" });
+    }
+
+    const token = tokenGenerator(user);
+
+    return res.send({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+      },
+      token,
+    });
+  } catch (error) {
+    return res.status(400).send({ error: "email and password is required!" });
   }
-
-  if (user.password !== User.hashPassword(password)) {
-    return res.status(400).send({ error: "Invalid username or password!" });
-  }
-
-  const token = tokenGenerator(user);
-
-  return res.send({
-    user: {
-      id: user.id,
-      name: user.name,
-      username: user.username,
-      createdAt: user.createdAt,
-    },
-    token,
-  });
 });
 
 router.post("/delete", async (req, res) => {
-  const { username } = req.body;
+  const { email } = req.body;
 
   try {
-    if (await User.findOne({ username })) {
-      await User.deleteOne({ username });
+    if (await User.findOne({ email })) {
+      await User.deleteOne({ email });
       return res.send({ message: "User removed!" });
     }
 
@@ -92,3 +86,4 @@ router.post("/delete", async (req, res) => {
 });
 
 module.exports = (app) => app.use("/auth", router);
+// 5fc24c93d89ea56d05c3378e = id daviddguedes

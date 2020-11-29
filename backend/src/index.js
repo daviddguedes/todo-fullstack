@@ -1,10 +1,15 @@
 const http = require("http");
 const express = require("express");
+const cors = require("cors");
+
+const app = express();
+
 const authController = require("./controllers/authController");
 const projectController = require("./controllers/projectController");
 const taskController = require("./controllers/taskController");
-const app = express();
+const User = require("./models/User");
 
+app.use(cors());
 app.use(express.json());
 
 authController(app);

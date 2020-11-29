@@ -20,9 +20,9 @@ module.exports = (req, res, next) => {
     return res.status(401).send({ error: "Token malformatted" });
   }
 
-  jwt.verify(token, SECRET, async (err, { id, name, username }) => {
+  jwt.verify(token, SECRET, async (err, { id, name, email }) => {
     if (err) return res.status(401).send({ error: "Invalid token" });
-    req.user = { id, name, username };
+    req.user = { id, name, email };
   });
 
   next();
