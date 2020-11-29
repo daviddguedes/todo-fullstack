@@ -18,4 +18,11 @@
 ### Frontend
 * `cd frontend/`
 * Run `npm install`
-* Run `npm start` or `npm build` to production
+* Run `npm start`
+
+### Frontend to Production
+* `cd frontend/`
+* Run `npm install`
+* Run `npm run build`
+* Run `npm install -g serve`
+* Run `serve -s build`
