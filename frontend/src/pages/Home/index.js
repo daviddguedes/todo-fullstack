@@ -111,7 +111,7 @@ function Home() {
         <div className="content-page">
           <div className="custom-body">
             <div className="projects-container">
-              {projects.map((project) => (
+              {projects.length ? projects.map((project) => (
                 <ProjectWidget
                   key={project._id}
                   project={project}
@@ -120,7 +120,7 @@ function Home() {
                   }
                   refreshProjects={handleRefreshProjects}
                 />
-              ))}
+              )) : <p>No projects yet...</p>}
             </div>
             <div className="project-form">
               <Stack tokens={{ childrenGap: 10 }}>

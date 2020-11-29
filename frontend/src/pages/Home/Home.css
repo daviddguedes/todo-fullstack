@@ -50,6 +50,7 @@ span.title-53 {
 .project-form {
     background-color: #dddddd;
     padding: 4em;
+    max-height: 6em;
 }
 
 .tasks-container {
@@ -58,6 +59,11 @@ span.title-53 {
 
 .checkbox-stack {
     margin-bottom: .2em;
+    padding: .2em 0;
+}
+
+.checkbox-stack:hover {
+    background-color: #e6e6e6;
 }
 
 .stack-todo {
