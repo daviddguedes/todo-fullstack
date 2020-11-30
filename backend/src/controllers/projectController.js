@@ -32,13 +32,13 @@ router.post("/", auth, async (req, res) => {
   }
 
   const { name } = req.body;
-  if (await Project.findOne({ name })) {
+  if (await Project.findOne({ name: name.toUpperCase() })) {
     return res.status(400).send({ error: "This project name already exists!" });
   }
 
   try {
     const project = await Project.create({
-      name,
+      name: name.toUpperCase(),
       userId: req.user.id,
     });
 

@@ -10,6 +10,7 @@ import NavContainer from "../../shared/NavContainer";
 import ProjectWidget from "./components/ProjectWidget";
 import DialogDelete from "./components/DialogDelete";
 import DialogUpdate from "./components/DialogUpdate";
+import MessageError from "../../shared/MessageError";
 
 export const HomeContext = createContext({});
 
@@ -18,6 +19,7 @@ function Home() {
   const [projects, setProjects] = useState([]);
   const [projectToChange, setProjectToChange] = useState(null);
   const [newProject, setNewProject] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
   const [hideDialog, { toggle: toggleHideDialog }] = useBoolean(true);
   const [hideModal, { toggle: toggleHideModal }] = useBoolean(true);
 
@@ -50,6 +52,7 @@ function Home() {
         setProjects((state) => [...state, data.project]);
       } catch (error) {
         console.log(error);
+        setErrorMessage(error.response.data.error);
       }
     }
   }
@@ -111,16 +114,20 @@ function Home() {
         <div className="content-page">
           <div className="custom-body">
             <div className="projects-container">
-              {projects.length ? projects.map((project) => (
-                <ProjectWidget
-                  key={project._id}
-                  project={project}
-                  handleChangeProject={(action, current) =>
-                    handleChangeProject(action, current)
-                  }
-                  refreshProjects={handleRefreshProjects}
-                />
-              )) : <p>No projects yet...</p>}
+              {projects.length ? (
+                projects.map((project) => (
+                  <ProjectWidget
+                    key={project._id}
+                    project={project}
+                    handleChangeProject={(action, current) =>
+                      handleChangeProject(action, current)
+                    }
+                    refreshProjects={handleRefreshProjects}
+                  />
+                ))
+              ) : (
+                <p>No projects yet...</p>
+              )}
             </div>
             <div className="project-form">
               <Stack tokens={{ childrenGap: 10 }}>
@@ -136,6 +143,12 @@ function Home() {
                   disabled={newProject === ""}
                   checked={false}
                 />
+                {errorMessage && (
+                  <MessageError
+                    message={errorMessage}
+                    onDismiss={() => setErrorMessage(null)}
+                  />
+                )}
               </Stack>
             </div>
           </div>
