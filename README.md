@@ -14,6 +14,7 @@
 * Run `npm install`
 * Run `docker run -it -d --name todo-challenge -p 27017:27017 mongo`
 * Create a file .env in backend root folder and copy and paste the content from .env.example on it
+* Run `npm start`
 
 ### Frontend
 * `cd frontend/`
