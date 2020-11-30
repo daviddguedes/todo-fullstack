@@ -39,7 +39,7 @@ function CheckBoxTask({ checked, task, handleOnChange }) {
           onDismiss={toggleTeachingBubbleVisible}
           headline={task.description}
         >
-          {`Terminated in ${terminated()}`}
+          {`Completed on ${terminated()}`}
         </TeachingBubble>
       )}
     </div>
