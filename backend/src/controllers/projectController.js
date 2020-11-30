@@ -80,7 +80,7 @@ router.put("/:projectId", auth, async (req, res) => {
   }
 
   try {
-    const projectUpdated = { ...project.toObject(), name: name.toString() };
+    const projectUpdated = { ...project.toObject(), name: name.toString().toUpperCase() };
     await project.updateOne(projectUpdated);
     res.send({ updated: projectUpdated });
   } catch (error) {
